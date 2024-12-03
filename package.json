@@ -1,0 +1,20 @@
+{
+  "name": "cs309_ecommerceproject_back-end",
+  "version": "1.0.0",
+  "description": "This repository contains the source code and project files for the final project of the CS309 course. The project is a fully functional e-commerce website that showcases modern web development practices, including user-friendly design and efficient functionality.\r ---",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "validator": "^13.12.0"
+  }
+}
