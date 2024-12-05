@@ -2,26 +2,24 @@ require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const appRouter = require("./routes");
+const errorHandler = require("./utils/errorHandler");
+const AppError = require("./utils/AppError");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/v1", appRouter);
 app.all("*", (req, res, next) => {
-  return res.status(404).json({
-    status: "fail",
-    msg: `Route ${req.url} not found`,
-  });
+  return next(new AppError(`Couldn't find this route ${req.originalUrl}`, 404));
 });
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running on port ${process.env.PORT}`);
-    });
+app.use(errorHandler);
+mongoose.connect(process.env.MONGO_URL).then(() => {
+  console.log("DB connection successful");
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
   });
+});
