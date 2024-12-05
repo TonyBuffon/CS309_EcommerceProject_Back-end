@@ -1,16 +1,24 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const productSchema = new Schema(
+const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: [true, "Please add a title"] },
+    title: {
+      type: String,
+      required: [true, "Please add a title"],
+      minlength: 3,
+    },
     description: {
       type: String,
       unique: true,
       required: [true, "Please add a description"],
+      minlength: 3,
     },
-    price: { type: String, required: [true, "Please add a price"] },
-    quantitiy: { type: String, required: [true, "Please add a quantitiy"] },
+    price: { type: String, required: [true, "Please add a price"], min: 0 },
+    quantity: {
+      type: String,
+      required: [true, "Please add a quantity"],
+      min: 0,
+    },
     image: { type: String, required: [true, "Please add a image"] },
     seller: {
       type: Schema.Types.ObjectId,
@@ -20,6 +28,8 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 module.exports = mongoose.model("Product", productSchema);
