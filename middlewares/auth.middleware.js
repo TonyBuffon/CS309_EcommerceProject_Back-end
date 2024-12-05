@@ -4,7 +4,7 @@ const User = require("../models/User");
 const AppError = require("./../utils/AppError");
 const catchAsync = require("./../utils/catchAsync");
 
-export default catchAsync(async (req, res, next) => {
+exports.authMiddleware = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's exist
   let token;
   if (
