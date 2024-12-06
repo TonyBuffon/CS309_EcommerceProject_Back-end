@@ -13,15 +13,15 @@ const productSchema = new mongoose.Schema(
       required: [true, "Please add a description"],
       minlength: 3,
     },
-    price: { type: String, required: [true, "Please add a price"], min: 0 },
+    price: { type: Number, required: [true, "Please add a price"], min: 0 },
     quantity: {
-      type: String,
+      type: Number,
       required: [true, "Please add a quantity"],
       min: 0,
     },
     image: { type: String, required: [true, "Please add a image"] },
     seller: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "Please add a seller"],
     },

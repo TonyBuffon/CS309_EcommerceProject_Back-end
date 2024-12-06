@@ -9,7 +9,7 @@ const { roles } = require("../enums/user.enum");
 exports.createProduct = catchAsync(async (req, res, next) => {
   const product = await Product.create({
     ...req.body,
-    seller: req.user.id,
+    seller: req.user._id,
   });
   successSender(res, product, 201);
 });
@@ -21,7 +21,7 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
       ? { _id: id }
       : {
           _id: id,
-          seller: req.user.id,
+          seller: req.user._id,
         };
   let product = await Product.findOne(filter);
   if (!product) return next(new AppError("product not found", 404));
@@ -57,7 +57,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   const filter =
     req.user.role === roles.Admin
       ? { _id: id }
-      : { _id: id, seller: req.user.id };
+      : { _id: id, seller: req.user._id };
   const product = await Product.findOne(filter);
   if (!product) {
     return next(new AppError("product not found", 404));

@@ -19,8 +19,7 @@ exports.authMiddleware = catchAsync(async (req, res, next) => {
     );
   }
   // 2) Verification token
-  // @ts-ignore
-  // @ts-nocheck
+
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) Check if user still exists
