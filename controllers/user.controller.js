@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
 const successSender = require("../utils/successSender");
+const { roles } = require("../enums/user.enum");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -30,9 +31,43 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
-
+  const newUser = await User.create({ ...req.body, role: roles.User });
   const token = signToken(newUser._id);
 
   successSender(res, { user: newUser, token }, 201);
 });
+
+exports.getMe = catchAsync(async (req, res, next) => {
+  successSender(res, req.user, 200);
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  delete req.body.role;
+  const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  successSender(res, user, 200);
+});
+
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const { page = 1, limit = 10 } = req.query;
+  const { role } = req.query;
+  page = parseInt(page);
+  limit = parseInt(limit);
+  const filter = role ? { role } : {};
+  const users = await User.find(filter)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+  successSender(res, users, 200);
+});
+
+exports.createUser = catchAsync(async (req, res, next) => {});
+
+exports.getUser = catchAsync(async (req, res, next) => {});
+// delete him
+exports.deleteUser = catchAsync(async (req, res, next) => {});
+
+exports.updateUser = catchAsync(async (req, res, next) => {});

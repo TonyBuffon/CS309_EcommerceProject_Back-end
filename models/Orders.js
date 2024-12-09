@@ -34,6 +34,7 @@ const OrdersSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: [true, "Please add the total amount"],
+      min: 0,
     },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
