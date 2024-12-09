@@ -3,8 +3,7 @@ const { promisify } = require("util");
 const User = require("../models/User");
 const AppError = require("./../utils/AppError");
 const catchAsync = require("./../utils/catchAsync");
-
-exports.authMiddleware = catchAsync(async (req, res, next) => {
+const authMiddleware = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's exist
   let token;
   if (
@@ -19,8 +18,7 @@ exports.authMiddleware = catchAsync(async (req, res, next) => {
     );
   }
   // 2) Verification token
-  // @ts-ignore
-  // @ts-nocheck
+
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) Check if user still exists
@@ -39,3 +37,5 @@ exports.authMiddleware = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+module.exports = authMiddleware;
