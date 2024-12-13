@@ -64,10 +64,36 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   successSender(res, users, 200);
 });
 
-exports.createUser = catchAsync(async (req, res, next) => {});
+exports.createUser = catchAsync(async (req, res, next) => {
+  const user = await User.create(req.body);
+  successSender(res, user, 201);
+});
 
-exports.getUser = catchAsync(async (req, res, next) => {});
+exports.getUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  successSender(res, user, 200);
+});
 // delete him
-exports.deleteUser = catchAsync(async (req, res, next) => {});
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    return next(new AppError("No user found with that ID", 404));
+  }
+  await User.findByIdAndDelete(id);
+  successSender(res, user, 204);
+});
 
-exports.updateUser = catchAsync(async (req, res, next) => {});
+exports.updateUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findBy(id);
+  if (!user) {
+    return next(new AppError("No user found with that ID", 404));
+  }
+  await User.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  successSender(res, user, 200);
+});
