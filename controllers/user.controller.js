@@ -45,7 +45,7 @@ exports.getMe = catchAsync(async (req, res, next) => {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   delete req.body.role;
-  const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -89,7 +89,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const user = await User.findBy(id);
+  const user = await User.findById(id);
   if (!user) {
     return next(new AppError("No user found with that ID", 404));
   }
