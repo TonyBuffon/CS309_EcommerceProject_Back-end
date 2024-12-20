@@ -3,27 +3,26 @@ const User = require("../models/User"); // Assuming a User model exists
 const catchAsync = require("../utils/catchAsync");
 const successSender = require("../utils/successSender");
 const AppError = require("../utils/AppError");
+const Wishlist = require("../models/Wishlist");
 
 exports.addToWishlist = catchAsync(async (req, res, next) => {
-  const { id } = req.params; // Product ID
-  const userId = req.user.id;
+  const { productId } = req.body; // Product ID
 
-  const product = await Product.findById(id);
+  const product = await Product.findById(productId);
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
 
-  const user = await User.findByIdAndUpdate(
-    userId,
-    { $addToSet: { wishlist: id } },
-    { new: true }
-  );
+  const wishlist = await Wishlist.create({
+    product: productId,
+    client: req.user.id,
+  });
 
-  successSender(res, { wishlist: user.wishlist }, 200);
+  successSender(res, { wishlist: wishlist }, 200);
 });
 
 exports.deleteFromWishlist = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params; // Product Id
   const userId = req.user.id;
 
   const product = await Product.findById(id);
@@ -31,23 +30,18 @@ exports.deleteFromWishlist = catchAsync(async (req, res, next) => {
     return next(new AppError("Product not found", 404));
   }
 
-  const user = await User.findByIdAndUpdate(
-    userId,
-    { $pull: { wishlist: id } },
-    { new: true }
-  );
+  const wishlist = await Wishlist.findOne({ product: id, client: userId });
+  if (!wishlist) return next(new AppError("Wishlist not found", 404));
 
-  successSender(res, { wishlist: user.wishlist }, 200);
+  await Wishlist.findByIdAndDelete(wishlist._id);
+  successSender(res, { wishlist: wishlist }, 204);
 });
 
-exports.getWishlist = catchAsync(async (req, res) => {
+exports.getMyWishlist = catchAsync(async (req, res) => {
   const userId = req.user.id;
 
-  const user = await User.findById(userId).populate("wishlist");
+  // const user = await User.findById(userId).populate("wishlist");
+  const wishlists = await Wishlist.find({ client: userId });
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
-
-  successSender(res, { wishlist: user.wishlist }, 200);
+  successSender(res, { wishlists }, 200);
 });

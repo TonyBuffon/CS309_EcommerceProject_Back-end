@@ -22,8 +22,8 @@ router.delete(
 );
 
 router.get(
-  "/getWishlist",
+  "/getMyWishlist",
   authMiddleware,
   roleValidatorMiddleware(roles.User),
-  wishlistController.getWishlist
+  wishlistController.getMyWishlist
 );
