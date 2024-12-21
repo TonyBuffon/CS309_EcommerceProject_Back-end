@@ -4,8 +4,8 @@
   "description": "This repository contains the source code and project files for the final project of the CS309 course. The project is a fully functional e-commerce website that showcases modern web development practices, including user-friendly design and efficient functionality.\r ---",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
   },
   "keywords": [],
   "author": "",
